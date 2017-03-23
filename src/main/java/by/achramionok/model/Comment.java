@@ -22,6 +22,10 @@ public class Comment implements Serializable{
     private Task task;
 
     @ManyToOne
+//    @JoinTable(
+//            name="User",
+//            joinColumns = @JoinColumn
+//    )
     @JoinColumn(name = "id_user", nullable = false)
     @JsonIgnore
     private User userComment;
@@ -33,6 +37,13 @@ public class Comment implements Serializable{
     private String content;
 
 
+    public void update(Comment comment){
+        this.id = comment.getId();
+        this.name = comment.getName();
+        this.userComment = comment.getUser();
+        this.content = comment.getName();
+        this.task = comment.getTask();
+    }
     public Comment() {
     }
 

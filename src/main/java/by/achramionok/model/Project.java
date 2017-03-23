@@ -32,6 +32,13 @@ public class Project implements Serializable {
     )
     private Set<User> users;
 
+    public void update(Project project){
+        this.id = project.getId();
+        this.name = project.getName();
+        this.createdAt = project.getCreatedAt();
+        this.users = project.getUsers();
+    }
+
     public Project() {
 
     }

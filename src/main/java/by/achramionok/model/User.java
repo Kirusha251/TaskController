@@ -1,5 +1,7 @@
 package by.achramionok.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -8,7 +10,6 @@ import java.util.Set;
  * Created by Kirill on 20.03.2017.
  */
 @Entity
-@Table(name = "user")
 public class User implements Serializable{
     @Id
     @GeneratedValue
@@ -16,7 +17,7 @@ public class User implements Serializable{
     private int id;
 
     @Column(name = "username")
-    private String username;
+    private String userName;
 
     @Column(name = "password")
     private String password;
@@ -28,18 +29,31 @@ public class User implements Serializable{
     private int role;
 
     @OneToMany(mappedBy = "userComment")
+    @JsonIgnore
     private Set<Comment> comments;
 
     @OneToMany(mappedBy = "userTask")
+    @JsonIgnore
     private Set<Task> tasks;
 
     @ManyToMany(mappedBy = "users")
+    @JsonIgnore
     private Set<Project> projects;
 
     public User() {
 
     }
 
+    public void update(User newUser){
+        this.userName = newUser.userName;
+        this.email = newUser.email;
+        this.password = newUser.password;
+        this.comments = newUser.comments;
+        this.tasks = newUser.tasks;
+        this.projects = newUser.projects;
+        this.role = newUser.role;
+        this.id = newUser.id;
+    }
     public Set<Comment> getComments() {
         return comments;
     }
@@ -73,11 +87,11 @@ public class User implements Serializable{
     }
 
     public String getUsername() {
-        return username;
+        return userName;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.userName = username;
     }
 
     public String getPassword() {
