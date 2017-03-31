@@ -1,6 +1,7 @@
 package by.achramionok.controller;
 
 import by.achramionok.model.Project;
+import by.achramionok.model.Task;
 import by.achramionok.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by Kirill on 22.03.2017.
@@ -66,5 +68,14 @@ public class ProjectController {
         project.update(newProject);
         projectRepository.save(project);
         return new ResponseEntity(HttpStatus.OK);
+    }
+    @RequestMapping(value = "/tasks/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Set<Task>> getAllTasks(@PathVariable String id){
+        Project project = projectRepository.findById(Integer.valueOf(id));
+        if(project == null){
+            return new ResponseEntity<Set<Task>>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<Set<Task>>(project.getTasks(),
+                HttpStatus.OK);
     }
 }

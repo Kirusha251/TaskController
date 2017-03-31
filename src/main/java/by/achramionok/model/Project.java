@@ -1,5 +1,7 @@
 package by.achramionok.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -22,6 +24,8 @@ public class Project implements Serializable {
     @Column(name = "created_at")
     private Date createdAt;
 
+    @OneToMany(mappedBy = "project")
+    private Set<Task> tasks;
     @ManyToMany
     @JoinTable(
             name = "user_project",
@@ -30,6 +34,7 @@ public class Project implements Serializable {
             inverseJoinColumns =
             @JoinColumn(name = "id_user", referencedColumnName = "id")
     )
+    @JsonIgnore
     private Set<User> users;
 
     public void update(Project project){
@@ -41,6 +46,14 @@ public class Project implements Serializable {
 
     public Project() {
 
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public Set<User> getUsers() {

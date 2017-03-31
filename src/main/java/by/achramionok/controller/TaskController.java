@@ -1,7 +1,9 @@
 package by.achramionok.controller;
 
 import by.achramionok.model.Comment;
+import by.achramionok.model.Project;
 import by.achramionok.model.Task;
+import by.achramionok.repository.ProjectRepository;
 import by.achramionok.repository.TaskRepository;
 import javafx.geometry.Pos;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +24,13 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
     @RequestMapping(value = "/all",method = RequestMethod.GET)
     public ResponseEntity<Collection<Task>> getAll(){
-        return new ResponseEntity<Collection<Task>>(taskRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity<Collection<Task>>(taskRepository.findAll(),
+                HttpStatus.OK);
     }
 
     @RequestMapping(value = "/id/{id}", method = RequestMethod.GET)
@@ -67,7 +73,8 @@ public class TaskController {
         if (task == null) {
             return new ResponseEntity<Set<Comment>>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<Set<Comment>>(task.getComments(),HttpStatus.OK);
+        return new ResponseEntity<Set<Comment>>(task.getComments(),
+                HttpStatus.OK);
     }
 
 }
