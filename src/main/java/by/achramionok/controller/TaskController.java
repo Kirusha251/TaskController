@@ -52,12 +52,11 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity addNewTask(@RequestBody Task task){
+    public ResponseEntity<Task> addNewTask(@RequestBody Task task){
         if(taskRepository.findById(task.getId())==null){
-            taskRepository.save(task);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<Task>(taskRepository.save(task),HttpStatus.OK);
         }else{
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Task>(HttpStatus.BAD_REQUEST);
         }
     }
 

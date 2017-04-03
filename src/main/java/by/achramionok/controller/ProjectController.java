@@ -2,6 +2,7 @@ package by.achramionok.controller;
 
 import by.achramionok.model.Project;
 import by.achramionok.model.Task;
+import by.achramionok.model.User;
 import by.achramionok.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,12 +52,11 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity addNewProject(@RequestBody Project project) {
+    public ResponseEntity<Project> addNewProject(@RequestBody Project project) {
         if (projectRepository.findById(project.getId()) == null) {
-            projectRepository.save(project);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<Project>(projectRepository.save(project), HttpStatus.OK);
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<Project>(HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.PUT)
@@ -69,6 +69,7 @@ public class ProjectController {
         projectRepository.save(project);
         return new ResponseEntity(HttpStatus.OK);
     }
+
     @RequestMapping(value = "/tasks/{id}", method = RequestMethod.GET)
     public ResponseEntity<Set<Task>> getAllTasks(@PathVariable String id){
         Project project = projectRepository.findById(Integer.valueOf(id));
@@ -76,6 +77,16 @@ public class ProjectController {
             return new ResponseEntity<Set<Task>>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<Set<Task>>(project.getTasks(),
+                HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/developers/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Set<User>> getFreeDevelopers(@PathVariable String id){
+        Project project = projectRepository.findById(Integer.valueOf(id));
+        if(project == null){
+            return new ResponseEntity<Set<User>>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<Set<User>>(project.getUsers(),
                 HttpStatus.OK);
     }
 }

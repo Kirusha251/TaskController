@@ -109,4 +109,17 @@ public class UserController {
         return new ResponseEntity<Set<Project>>(user.getProjects(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/project-dev/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Set<User>> getDevelopersFromProject(@PathVariable String id){
+        return new ResponseEntity<Set<User>>(userRepository.findAllByRoleAndProjectsId(2,Integer.valueOf(id)),
+                HttpStatus.OK);
+    }
+
+//    @RequestMapping(value = "/free-dev/{id}", method = RequestMethod.GET)
+//    public ResponseEntity<Set<User>> getFreeDevelopers(@PathVariable String id){
+//
+//        return new ResponseEntity<Set<User>>(userRepository.findAllByProjectsIdNotAndRole(1,2),
+//                HttpStatus.OK);
+//    }
+
 }
