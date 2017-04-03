@@ -25,7 +25,9 @@ public class Project implements Serializable {
     private Date createdAt;
 
     @OneToMany(mappedBy = "project")
+    @JsonIgnore
     private Set<Task> tasks;
+
     @ManyToMany
     @JoinTable(
             name = "user_project",

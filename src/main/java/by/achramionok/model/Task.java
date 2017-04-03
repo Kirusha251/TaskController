@@ -1,5 +1,8 @@
 package by.achramionok.model;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -15,14 +18,6 @@ public class Task implements Serializable{
     @Column(name = "id", nullable = false)
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_project")
-    private Project project;
-
-    @ManyToOne
-    @JoinColumn(name = "id_user")
-    private User userTask;
-
     @Column(name = "name")
     private String name;
 
@@ -32,7 +27,18 @@ public class Task implements Serializable{
     @Column(name = "description")
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "id_project")
+    @JsonIgnore
+    private Project project;
+
+    @ManyToOne
+    @JoinColumn(name = "id_user")
+    @JsonIgnore
+    private User userTask;
+
     @OneToMany(mappedBy = "task")
+    @JsonIgnore
     private Set<Comment> comments;
 
     public Task() {
@@ -47,6 +53,7 @@ public class Task implements Serializable{
         this.project = project;
     }
 
+    @JsonIgnore
     public User getUser() {
         return userTask;
     }

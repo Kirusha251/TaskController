@@ -20,9 +20,11 @@ public class User implements Serializable{
     private String userName;
 
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     @Column(name = "email")
+    @JsonIgnore
     private String email;
 
     @Column(name = "role")
