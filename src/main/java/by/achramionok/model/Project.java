@@ -50,6 +50,12 @@ public class Project implements Serializable {
 
     }
 
+    public Project(String name, Date createdAt, Set<User> users) {
+        this.name = name;
+        this.createdAt = createdAt;
+        this.users = users;
+    }
+
     public Set<Task> getTasks() {
         return tasks;
     }

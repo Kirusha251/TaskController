@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -16,6 +17,7 @@ public interface UserRepository extends JpaRepository<User, Integer>{
     User findById(Integer idUser);
     User findByEmail(String email);
     User findByUserName(String UserName);
+    Collection<User> findAllByRole(Integer role);
     Set<User> findAllByRoleAndProjectsId(Integer role,Integer id);
     //Set<User> findAllByProjectsIdNotAndRole(Integer id,Integer role);
 //    @Query("SELECT u.id, u.userName, u.role FROM User u CROSS JOIN Project p ON p.id <> :id and u.role = :role")
