@@ -22,11 +22,11 @@ public class CORSFilter implements Filter {
         response.setHeader("Access-Control-Expose-Headers", "authorization, X-Custom");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with, UserId");
         if(request.getMethod().equals("OPTIONS")){
             response.setHeader("Access-Control-Allow-Credentials","*");
             response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-            response.addHeader("Access-Control-Allow-Headers", "Content-Type,X-XSRF-TOKEN, authorization");
+            response.addHeader("Access-Control-Allow-Headers", "Content-Type,X-XSRF-TOKEN, authorization, UserId");
             response.addHeader("Access-Control-Max-Age", "1");
             response.getWriter().print("OK");
             response.getWriter().flush();

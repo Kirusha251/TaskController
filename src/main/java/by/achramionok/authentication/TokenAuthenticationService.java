@@ -1,8 +1,11 @@
 package by.achramionok.authentication;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.boot.json.GsonJsonParser;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
