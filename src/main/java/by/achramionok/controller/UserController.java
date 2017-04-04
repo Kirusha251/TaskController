@@ -1,5 +1,6 @@
 package by.achramionok.controller;
 
+import by.achramionok.authentication.RegistrationCredentials;
 import by.achramionok.model.Comment;
 import by.achramionok.model.Project;
 import by.achramionok.model.Task;
@@ -40,7 +41,12 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @RequestMapping(value = "/email/{email}", method = RequestMethod.GET)
+    @RequestMapping(value = "/all-developers", method = RequestMethod.GET)
+    public ResponseEntity<Collection<User>> getAllDevelopers(){
+        return new ResponseEntity<Collection<User>>(userRepository.findAllByRole(2), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/email/{email}/", method = RequestMethod.GET)
     public ResponseEntity<User> getByEmail(@PathVariable String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
@@ -70,10 +76,20 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity add(@RequestBody User user) {
-        userRepository.save(user);
-        return new ResponseEntity(HttpStatus.OK);
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public ResponseEntity create(@RequestBody RegistrationCredentials u) {
+        User user = userRepository.findByEmail(u.getEmail());
+        if(userRepository.findByEmail(u.getEmail())== null &&
+                userRepository.findByUserName(u.getUsername()) ==null){
+            user = new User();
+            user.setUsername(u.getUsername());
+            user.setEmail(u.getEmail());
+            user.setPassword(u.getPassword());
+            user.setRole(u.getRole());
+            userRepository.save(user);
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/id/{id}", method = RequestMethod.DELETE)
