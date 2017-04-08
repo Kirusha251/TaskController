@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -43,7 +44,10 @@ public class Project implements Serializable {
         this.id = project.getId();
         this.name = project.getName();
         this.createdAt = project.getCreatedAt();
-        this.users = project.getUsers();
+    }
+
+    public void update(Set<User> users){
+        this.users = users;
     }
 
     public Project() {

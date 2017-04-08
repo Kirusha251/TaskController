@@ -5,6 +5,7 @@ import by.achramionok.model.Comment;
 import by.achramionok.model.Project;
 import by.achramionok.model.Task;
 import by.achramionok.model.User;
+import by.achramionok.repository.ProjectRepository;
 import by.achramionok.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.xml.ws.Response;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,6 +29,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<Collection<User>> getAll() {
@@ -131,11 +137,19 @@ public class UserController {
                 HttpStatus.OK);
     }
 
-//    @RequestMapping(value = "/free-dev/{id}", method = RequestMethod.GET)
-//    public ResponseEntity<Set<User>> getFreeDevelopers(@PathVariable String id){
-//
-//        return new ResponseEntity<Set<User>>(userRepository.findAllByProjectsIdNotAndRole(1,2),
-//                HttpStatus.OK);
-//    }
+    @RequestMapping(value = "/free-dev/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Collection<User>> getFreeDevelopers(@PathVariable String id){
+        Collection<User> devs= userRepository.findAllByRole(2);
+        Project currentProject = projectRepository.findById(Integer.valueOf(id));
+        Collection<User> freeDevs = new ArrayList<User>();
+        for (User u:
+             devs) {
+            if(!u.getProjects().contains(currentProject)){
+                freeDevs.add(u);
+            }
+        }
+        return new ResponseEntity<Collection<User>>(freeDevs,
+                HttpStatus.OK);
+    }
 
 }

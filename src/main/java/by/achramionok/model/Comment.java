@@ -44,6 +44,14 @@ public class Comment implements Serializable{
         this.content = comment.getName();
         this.task = comment.getTask();
     }
+
+    public Comment(Task task, User userComment, String name, String content) {
+        this.task = task;
+        this.userComment = userComment;
+        this.name = name;
+        this.content = content;
+    }
+
     public Comment() {
     }
 

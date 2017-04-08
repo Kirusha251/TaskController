@@ -1,6 +1,7 @@
 package by.achramionok.controller;
 
 import by.achramionok.model.Comment;
+import by.achramionok.model.Project;
 import by.achramionok.model.Task;
 import by.achramionok.model.User;
 import by.achramionok.repository.ProjectRepository;
@@ -29,6 +30,9 @@ public class TaskController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
     Authentication auth;
     @RequestMapping(value = "/all",method = RequestMethod.GET)
     public ResponseEntity<Collection<Task>> getAll(){
@@ -45,6 +49,14 @@ public class TaskController {
         return new ResponseEntity<Task>(task,HttpStatus.OK);
     }
 
+    @RequestMapping(value = "user/id/{id}", method = RequestMethod.GET)
+    public ResponseEntity<User> getUserByTaskId(@PathVariable String id){
+        Task task = taskRepository.findById(Integer.valueOf(id));
+        if(task == null){
+            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<User>(task.getUser(),HttpStatus.OK);
+    }
     @RequestMapping(value = "/name/{name}", method = RequestMethod.GET)
     public ResponseEntity<Task> getByName(@PathVariable String name){
         Task task = taskRepository.findByName(name);
@@ -54,13 +66,17 @@ public class TaskController {
         return new ResponseEntity<Task>(task, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/add/project-id/{id}", method = RequestMethod.POST)
-    public ResponseEntity<Task> addNewTask(@RequestBody Task task){
-        auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(auth.getName());
+    @RequestMapping(value = "/add/by-project-id/{id}/{userId}", method = RequestMethod.POST)
+    public ResponseEntity<Task> addNewTask(@RequestBody Task task, @PathVariable String id, @PathVariable String userId){
+        User user = userRepository.findById(Integer.valueOf(userId));
+        Project project = projectRepository.findById(Integer.valueOf(id));
+        Task newTask =new Task(task.getName(),
+                task.getStatus(),
+                task.getDescription(),
+                project, user);
         if(user != null){
-
-            return new ResponseEntity<Task>(taskRepository.save(task),HttpStatus.OK);
+            taskRepository.save(newTask);
+            return new ResponseEntity<Task>(newTask, HttpStatus.OK);
         }else{
             return new ResponseEntity<Task>(HttpStatus.BAD_REQUEST);
         }
@@ -70,6 +86,20 @@ public class TaskController {
     public ResponseEntity deleteTask(@PathVariable String id){
         taskRepository.delete(Integer.valueOf(id));
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Task> updateTask(@RequestBody Task task,@PathVariable String id){
+        Task task1 = taskRepository.findById(task.getId());
+        if(task1 == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        task1.update(task.getName(), task.getStatus(), task.getDescription());
+        if(Integer.valueOf(id)!=0) {
+            task1.setUser(userRepository.findById(Integer.valueOf(id)));
+        }
+        taskRepository.save(task1);
+        return new ResponseEntity<>(task1,HttpStatus.OK);
     }
 
     @RequestMapping(value = "/comments/{id}", method = RequestMethod.GET)

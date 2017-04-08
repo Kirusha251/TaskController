@@ -44,6 +44,19 @@ public class Task implements Serializable{
     public Task() {
 
     }
+    public void update(String name, String status, String description){
+        this.name = name;
+        this.status = status;
+        this.description = description;
+    }
+    public Task(String name, String status, String description, Project project, User userTask) {
+        this.name = name;
+        this.status = status;
+        this.description = description;
+        this.project = project;
+        this.userTask = userTask;
+        this.comments = null;
+    }
 
     public Project getProject() {
         return project;

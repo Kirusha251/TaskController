@@ -13,9 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Kirill on 22.03.2017.
@@ -91,13 +89,24 @@ public class ProjectController {
         }
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.PUT)
-    public ResponseEntity saveChanges(@RequestBody Project newProject) {
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    public ResponseEntity<Project> saveChanges(@RequestBody Project newProject) {
         Project project = projectRepository.findById(newProject.getId());
+        if (project == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        project.update(newProject);
+        project = projectRepository.save(project);
+        return new ResponseEntity<>(project,HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/update/developers/{id}", method = RequestMethod.PUT)
+    public ResponseEntity saveChanges(@RequestBody Set<User> users, @PathVariable String id) {
+        Project project = projectRepository.findById(Integer.valueOf(id));
         if (project == null) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        project.update(newProject);
+        project.update(users);
         projectRepository.save(project);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -113,7 +122,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/developers/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Set<User>> getFreeDevelopers(@PathVariable String id) {
+    public ResponseEntity<Set<User>> getDevelopers(@PathVariable String id) {
         Project project = projectRepository.findById(Integer.valueOf(id));
         if (project == null) {
             return new ResponseEntity<Set<User>>(HttpStatus.BAD_REQUEST);
