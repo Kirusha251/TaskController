@@ -23,7 +23,7 @@ public class Project implements Serializable {
     private String name;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private String createdAt;
 
     @OneToMany(mappedBy = "project")
     @JsonIgnore
@@ -54,7 +54,7 @@ public class Project implements Serializable {
 
     }
 
-    public Project(String name, Date createdAt, Set<User> users) {
+    public Project(String name, String createdAt, Set<User> users) {
         this.name = name;
         this.createdAt = createdAt;
         this.users = users;
@@ -92,11 +92,11 @@ public class Project implements Serializable {
         this.name = name;
     }
 
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 }

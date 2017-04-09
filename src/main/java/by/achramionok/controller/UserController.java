@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -33,9 +35,20 @@ public class UserController {
     @Autowired
     private ProjectRepository projectRepository;
 
+    Authentication auth;
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<Collection<User>> getAll() {
         return ResponseEntity.ok(userRepository.findAll());
+    }
+
+    @RequestMapping(value = "/signed", method = RequestMethod.GET)
+    public ResponseEntity<User> getSignedUser() {
+        auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(auth.getName());
+        if (user == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        return ResponseEntity.ok(user);
     }
 
     @RequestMapping(value = "/id/{id}", method = RequestMethod.GET)

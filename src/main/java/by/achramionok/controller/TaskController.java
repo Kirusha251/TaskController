@@ -40,6 +40,15 @@ public class TaskController {
                 HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/all/developer/{id}",method = RequestMethod.GET)
+    public ResponseEntity<Collection<Task>> getDeveloperTasks(@PathVariable String id){
+        auth = SecurityContextHolder.getContext().getAuthentication();
+        return new ResponseEntity<Collection<Task>>(
+                taskRepository.findAllByProjectAndUserTask(projectRepository.findById(Integer.valueOf(id)),
+                userRepository.findByEmail(auth.getName())),
+                HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/id/{id}", method = RequestMethod.GET)
     public ResponseEntity<Task> getById(@PathVariable String id){
         Task task = taskRepository.findById(Integer.valueOf(id));
@@ -57,6 +66,7 @@ public class TaskController {
         }
         return new ResponseEntity<User>(task.getUser(),HttpStatus.OK);
     }
+
     @RequestMapping(value = "/name/{name}", method = RequestMethod.GET)
     public ResponseEntity<Task> getByName(@PathVariable String name){
         Task task = taskRepository.findByName(name);

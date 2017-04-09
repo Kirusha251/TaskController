@@ -49,6 +49,18 @@ public class CommentController {
         return new ResponseEntity<>(comment,HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/update/", method = RequestMethod.PUT)
+    public ResponseEntity<Collection<Comment>> updateComment(@RequestBody Comment changedComment){
+        Comment comment = commentRepository.findById(changedComment.getId());
+        if(comment == null){
+            return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else{
+            comment.update(changedComment);
+            comment = commentRepository.save(comment);
+            return  new ResponseEntity<Collection<Comment>>(commentRepository.findAll(),HttpStatus.OK);
+        }
+    }
+
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Collection<Comment>> deleteById(@PathVariable String id){
         if(commentRepository.findById(Integer.valueOf(id)) == null){

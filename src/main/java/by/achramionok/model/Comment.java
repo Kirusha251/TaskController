@@ -39,10 +39,7 @@ public class Comment implements Serializable{
 
     public void update(Comment comment){
         this.id = comment.getId();
-        this.name = comment.getName();
-        this.userComment = comment.getUser();
-        this.content = comment.getName();
-        this.task = comment.getTask();
+        this.content = comment.getContent();
     }
 
     public Comment(Task task, User userComment, String name, String content) {
@@ -67,6 +64,7 @@ public class Comment implements Serializable{
         this.task = task;
     }
 
+    @JsonIgnore
     public User getUser() {
         return userComment;
     }
