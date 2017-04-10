@@ -1,4 +1,4 @@
-package by.achramionok.service;
+package by.achramionok.service.impl;
 
 
 import by.achramionok.model.User;

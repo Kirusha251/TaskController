@@ -1,6 +1,7 @@
 package by.achramionok.controller;
 
 import by.achramionok.authentication.RegistrationCredentials;
+import by.achramionok.email.OnRegistrationCompleteEvent;
 import by.achramionok.model.Comment;
 import by.achramionok.model.Project;
 import by.achramionok.model.Task;
@@ -8,18 +9,20 @@ import by.achramionok.model.User;
 import by.achramionok.repository.ProjectRepository;
 import by.achramionok.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.xml.ws.Response;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,6 +37,9 @@ public class UserController {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
 
     Authentication auth;
     @RequestMapping(value = "/all", method = RequestMethod.GET)
@@ -96,7 +102,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity create(@RequestBody RegistrationCredentials u) {
+    public ResponseEntity create(HttpServletRequest request, @RequestBody RegistrationCredentials u) {
         User user = userRepository.findByEmail(u.getEmail());
         if(userRepository.findByEmail(u.getEmail())== null &&
                 userRepository.findByUserName(u.getUsername()) ==null){
@@ -105,7 +111,9 @@ public class UserController {
             user.setEmail(u.getEmail());
             user.setPassword(u.getPassword());
             user.setRole(u.getRole());
-            userRepository.save(user);
+            user = userRepository.save(user);
+            String appUrl = request.getContextPath();
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl));
             return new ResponseEntity(HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);

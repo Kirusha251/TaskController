@@ -23,6 +23,10 @@ public class User implements Serializable{
     @JsonIgnore
     private String password;
 
+    @Column(name = "enabled")
+    @JsonIgnore
+    private boolean enabled;
+
     @Column(name = "email")
     @JsonIgnore
     private String email;
@@ -56,6 +60,16 @@ public class User implements Serializable{
         this.role = newUser.role;
         this.id = newUser.id;
     }
+
+    @JsonIgnore
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public Set<Comment> getComments() {
         return comments;
     }
